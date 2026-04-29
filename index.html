@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Project Mainframe</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#08080d;--panel:#0f0f17;--panel2:#13131e;--border:#1c1c2e;--border2:#242436;--accent:#00ff88;--purple:#7c3aed;--amber:#f59e0b;--blue:#38bdf8;--red:#ff4d6d;--text:#e8e8f2;--muted:#5a5a72;--muted2:#8888a8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:224px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:20;}
+.logo{padding:22px 20px 18px;border-bottom:1px solid var(--border);}
+.logo-mark{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:3px;}
+.logo-name{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--text);}
+.nav{flex:1;padding:12px 0;overflow-y:auto;}
+.nav-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 20px 4px;margin-top:6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--muted2);font-size:13.5px;font-weight:500;border-left:2px solid transparent;transition:all .15s;user-select:none;}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.025);}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(0,255,136,.05);}
+.nav-item.ig.active{color:#fd7e1d;border-left-color:#fd7e1d;background:rgba(253,126,29,.06);}
+.nav-item.tt.active{color:#69C9D0;border-left-color:#69C9D0;background:rgba(105,201,208,.06);}
+.nav-item.sh.active{color:#96bf47;border-left-color:#96bf47;background:rgba(150,191,71,.06);}
+.nav-item.meta.active{color:#1877f2;border-left-color:#1877f2;background:rgba(24,119,242,.06);}
+.nav-item.yt.active{color:#ff4444;border-left-color:#ff4444;background:rgba(255,68,68,.06);}
+.nav-item.ai-nav.active{color:#a78bfa;border-left-color:#a78bfa;background:rgba(167,139,250,.06);}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sidebar-footer{padding:14px 16px;border-top:1px solid var(--border);}
+.user-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.user-name{font-size:12px;font-weight:600;color:var(--text);}
+.user-plan{font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:1px;}
+.main{margin-left:224px;padding:26px 30px;position:relative;z-index:1;min-height:100vh;}
+.page{display:none;animation:fadeUp .35s ease both;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:700;color:var(--text);}
+.page-sub{font-size:12.5px;color:var(--muted2);margin-top:3px;}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.date-range{display:flex;background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.date-btn{padding:7px 13px;font-size:12px;font-weight:500;cursor:pointer;color:var(--muted2);border:none;background:transparent;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.date-btn:hover{color:var(--text);}
+.date-btn.active{background:rgba(0,255,136,.1);color:var(--accent);}
+.connect-btn{padding:8px 16px;background:var(--accent);color:#080808;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.connect-btn:hover{background:#00cc70;transform:translateY(-1px);}
+.platform-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.ptab{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;border:1px solid var(--border);background:var(--panel);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted2);transition:all .2s;}
+.ptab:hover{border-color:var(--border2);color:var(--text);}
+.ptab.active{color:#fff;}
+.ptab.all.active{background:rgba(0,255,136,.12);border-color:var(--accent);color:var(--accent);}
+.ptab.ig.active{background:linear-gradient(135deg,rgba(131,58,180,.5),rgba(253,29,29,.4));border-color:#fd1d1d;}
+.ptab.tt.active{background:rgba(105,201,208,.12);border-color:#69C9D0;color:#69C9D0;}
+.ptab.sh.active{background:rgba(150,191,71,.12);border-color:#96bf47;color:#96bf47;}
+.ptab.meta.active{background:rgba(24,119,242,.12);border-color:#1877f2;color:#1877f2;}
+.ptab.yt.active{background:rgba(255,68,68,.12);border-color:#ff4444;color:#ff4444;}
+.kpi-grid{display:grid;gap:14px;margin-bottom:20px;}
+.kpi-grid.cols4{grid-template-columns:repeat(4,1fr);}
+.kpi-grid.cols3{grid-template-columns:repeat(3,1fr);}
+.kpi-grid.cols5{grid-template-columns:repeat(5,1fr);}
+.kpi-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;}
+.kpi-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.kpi-card.c-green::after{background:var(--accent);}
+.kpi-card.c-purple::after{background:var(--purple);}
+.kpi-card.c-amber::after{background:var(--amber);}
+.kpi-card.c-blue::after{background:var(--blue);}
+.kpi-card.c-red::after{background:var(--red);}
+.kpi-card.c-ig::after{background:linear-gradient(90deg,#833ab4,#fd1d1d,#fcb045);}
+.kpi-card.c-tt::after{background:#69C9D0;}
+.kpi-card.c-sh::after{background:#96bf47;}
+.kpi-card.c-meta::after{background:#1877f2;}
+.kpi-card.c-yt::after{background:#ff0000;}
+.kpi-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;font-family:'Space Mono',monospace;}
+.kpi-value{font-size:28px;font-weight:700;font-family:'Space Mono',monospace;line-height:1;margin-bottom:7px;}
+.kpi-card.c-green .kpi-value,.kpi-card.c-sh .kpi-value{color:var(--accent);}
+.kpi-card.c-purple .kpi-value{color:#a78bfa;}
+.kpi-card.c-amber .kpi-value{color:var(--amber);}
+.kpi-card.c-blue .kpi-value,.kpi-card.c-meta .kpi-value{color:var(--blue);}
+.kpi-card.c-red .kpi-value,.kpi-card.c-yt .kpi-value{color:#ff6666;}
+.kpi-card.c-ig .kpi-value{color:#fd7e1d;}
+.kpi-card.c-tt .kpi-value{color:#69C9D0;}
+.kpi-change{font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;}
+.kpi-change.up{color:var(--accent);}
+.kpi-change.down{color:var(--red);}
+.kpi-change span{color:var(--muted);font-weight:400;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
+.card-title{font-size:14px;font-weight:600;color:var(--text);}
+.card-sub{font-size:11.5px;color:var(--muted2);margin-top:2px;}
+.card-tag{font-size:10px;color:var(--muted2);padding:4px 10px;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:all .15s;font-family:'Space Mono',monospace;white-space:nowrap;flex-shrink:0;}
+.card-tag:hover{color:var(--text);border-color:var(--border2);}
+.chart-svg{width:100%;overflow:visible;}
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:18px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-bottom:18px;}
+.pb-list{display:flex;flex-direction:column;gap:13px;}
+.pb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.pb-name{font-size:13px;font-weight:500;color:var(--text);}
+.pb-val{font-size:12px;font-weight:700;font-family:'Space Mono',monospace;}
+.pb-bar-bg{height:5px;background:var(--border);border-radius:99px;overflow:hidden;}
+.pb-bar{height:100%;border-radius:99px;}
+.posts-list{display:flex;flex-direction:column;gap:8px;}
+.post-item{display:flex;align-items:center;gap:11px;padding:10px;border-radius:8px;background:rgba(255,255,255,.018);border:1px solid transparent;transition:all .15s;cursor:pointer;}
+.post-item:hover{border-color:var(--border);background:rgba(255,255,255,.035);}
+.post-thumb{width:40px;height:40px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.post-info{flex:1;min-width:0;}
+.post-caption{font-size:12.5px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.post-meta{font-size:11px;color:var(--muted2);margin-top:1px;}
+.post-stat{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.post-badge{font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600;flex-shrink:0;}
+.post-badge.up{background:rgba(0,255,136,.15);color:var(--accent);}
+.post-badge.down{background:rgba(255,77,109,.12);color:var(--red);}
+.products-list{display:flex;flex-direction:column;gap:8px;}
+.product-item{display:flex;align-items:center;gap:11px;padding:10px;border-radius:8px;background:rgba(255,255,255,.018);border:1px solid transparent;transition:all .15s;}
+.product-item:hover{border-color:var(--border);}
+.product-rank{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);width:18px;text-align:center;flex-shrink:0;}
+.product-info{flex:1;}
+.product-name{font-size:13px;font-weight:500;}
+.product-units{font-size:11px;color:var(--muted2);}
+.product-rev{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--amber);flex-shrink:0;}
+.ai-panel{background:linear-gradient(145deg,rgba(124,58,237,.1),rgba(8,8,13,.6));border:1px solid rgba(124,58,237,.22);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
+.ai-panel::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.18),transparent 70%);pointer-events:none;}
+.ai-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.ai-icon{width:32px;height:32px;background:rgba(124,58,237,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ai-title{font-size:14px;font-weight:700;color:#a78bfa;}
+.ai-status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.ai-insights{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.insight{padding:9px 12px;background:rgba(0,0,0,.3);border-radius:8px;border-left:2px solid;font-size:12px;color:var(--text);line-height:1.55;}
+.insight.pos{border-color:var(--accent);}
+.insight.warn{border-color:var(--amber);}
+.insight.tip{border-color:var(--blue);}
+.ai-input-row{display:flex;gap:8px;}
+.ai-input{flex:1;background:rgba(0,0,0,.4);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.ai-input:focus{border-color:rgba(124,58,237,.6);}
+.ai-input::placeholder{color:var(--muted);}
+.ai-send{padding:8px 14px;background:rgba(124,58,237,.35);border:1px solid rgba(124,58,237,.4);border-radius:8px;color:#a78bfa;font-size:14px;cursor:pointer;transition:all .15s;}
+.ai-send:hover{background:rgba(124,58,237,.55);}
+.ai-response{margin-top:10px;padding:10px 12px;background:rgba(124,58,237,.08);border-radius:8px;border:1px solid rgba(124,58,237,.18);font-size:12px;color:#c4b5fd;line-height:1.6;display:none;}
+.ai-response.show{display:block;animation:fadeUp .3s ease;}
+.typing::after{content:'▋';animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.metric-table{width:100%;border-collapse:collapse;}
+.metric-table th{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;font-weight:400;padding:0 0 10px;text-align:left;border-bottom:1px solid var(--border);}
+.metric-table th:not(:first-child){text-align:right;}
+.metric-table td{padding:10px 0;border-bottom:1px solid rgba(28,28,46,.5);font-size:13px;vertical-align:middle;}
+.metric-table td:not(:first-child){text-align:right;font-family:'Space Mono',monospace;font-size:12px;}
+.metric-table tr:last-child td{border-bottom:none;}
+.td-name{font-weight:500;color:var(--text);}
+.td-good{color:var(--accent);}
+.td-warn{color:var(--amber);}
+.td-bad{color:var(--red);}
+.td-muted{color:var(--muted2);}
+.donut-wrap{display:flex;align-items:center;gap:20px;}
+.donut-legend{display:flex;flex-direction:column;gap:8px;flex:1;}
+.donut-leg-item{display:flex;align-items:center;gap:8px;font-size:12.5px;}
+.donut-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.settings-section-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(28,28,46,.4);}
+.setting-row:last-child{border-bottom:none;}
+.setting-label{font-size:14px;font-weight:500;}
+.setting-sub{font-size:12px;color:var(--muted2);margin-top:2px;}
+.toggle{width:42px;height:22px;background:var(--border);border-radius:99px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--accent);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;}
+.toggle.on::after{transform:translateX(20px);}
+.setting-select{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--border2);border-radius:16px;padding:30px;width:480px;max-width:92vw;}
+.modal-title{font-size:19px;font-weight:700;margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--muted2);margin-bottom:22px;}
+.plat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px;}
+.plat-opt{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid var(--border);cursor:pointer;font-size:13.5px;font-weight:500;transition:all .15s;position:relative;}
+.plat-opt:hover{border-color:var(--border2);background:rgba(255,255,255,.025);}
+.plat-opt.connected{border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.05);}
+.plat-opt .conn-badge{position:absolute;top:5px;right:8px;font-size:9px;color:var(--accent);font-family:'Space Mono',monospace;letter-spacing:1px;}
+.modal-close-btn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#080808;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.modal-close-btn:hover{background:#00cc70;}
+.ad-row{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,.018);border:1px solid transparent;margin-bottom:8px;transition:all .15s;}
+.ad-row:hover{border-color:var(--border);}
+.ad-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ad-status.live{background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.ad-status.paused{background:var(--amber);}
+.ad-status.stopped{background:var(--red);}
+.ad-info{flex:1;}
+.ad-name{font-size:13px;font-weight:500;}
+.ad-meta{font-size:11px;color:var(--muted2);}
+.ad-stats{display:flex;gap:20px;flex-shrink:0;}
+.ad-stat{text-align:right;}
+.ad-stat-val{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+.ad-stat-lbl{font-size:10px;color:var(--muted);margin-top:1px;}
+.video-row{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:rgba(255,255,255,.018);border:1px solid transparent;margin-bottom:8px;transition:all .15s;cursor:pointer;}
+.video-row:hover{border-color:var(--border);}
+.video-thumb{width:52px;height:36px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.video-info{flex:1;min-width:0;}
+.video-title{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.video-meta{font-size:11px;color:var(--muted2);}
+.video-stats{display:flex;gap:16px;flex-shrink:0;}
+.vs{text-align:right;}
+.vs-val{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;}
+.vs-lbl{font-size:10px;color:var(--muted);}
+.chat-window{height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding-right:4px;}
+.chat-window::-webkit-scrollbar{width:4px;}
+.chat-window::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+.chat-msg{max-width:88%;padding:10px 14px;border-radius:10px;font-size:13px;line-height:1.55;}
+.chat-msg.user{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.25);color:#c4b5fd;margin-left:auto;border-bottom-right-radius:3px;}
+.chat-msg.ai{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px;}
+.chat-input-row{display:flex;gap:10px;}
+.chat-input{flex:1;background:rgba(0,0,0,.4);border:1px solid rgba(124,58,237,.3);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;}
+.chat-input:focus{border-color:rgba(124,58,237,.6);}
+.chat-input::placeholder{color:var(--muted);}
+.chat-send-btn{padding:10px 20px;background:rgba(124,58,237,.4);border:1px solid rgba(124,58,237,.4);border-radius:10px;color:#a78bfa;font-size:14px;cursor:pointer;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.chat-send-btn:hover{background:rgba(124,58,237,.6);}
+.prompt-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.pchip{padding:6px 12px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:99px;font-size:12px;color:#a78bfa;cursor:pointer;transition:all .15s;}
+.pchip:hover{background:rgba(124,58,237,.22);}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">◈ Project</div>
+    <div class="logo-name">MAINFRAME</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" data-page="dashboard" onclick="goPage(this)"><span class="nav-icon">⬡</span>Dashboard</div>
+    <div class="nav-label">Platforms</div>
+    <div class="nav-item ig" data-page="instagram" onclick="goPage(this)"><span class="nav-icon">📸</span>Instagram</div>
+    <div class="nav-item tt" data-page="tiktok" onclick="goPage(this)"><span class="nav-icon">♪</span>TikTok</div>
+    <div class="nav-item sh" data-page="shopify" onclick="goPage(this)"><span class="nav-icon">🛍</span>Shopify</div>
+    <div class="nav-item meta" data-page="meta" onclick="goPage(this)"><span class="nav-icon">Ⓜ</span>Meta Ads</div>
+    <div class="nav-item yt" data-page="youtube" onclick="goPage(this)"><span class="nav-icon">▶</span>YouTube</div>
+    <div class="nav-label">Tools</div>
+    <div class="nav-item ai-nav" data-page="ai" onclick="goPage(this)"><span class="nav-icon">◈</span>AI Advisor</div>
+    <div class="nav-item" data-page="settings" onclick="goPage(this)"><span class="nav-icon">⚙</span>Settings</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">JD</div>
+      <div>
+        <div class="user-name">John Doe</div>
+        <div class="user-plan">PRO PLAN</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="topbar">
+    <div><div class="page-title">Dashboard</div><div class="page-sub">All platforms · updated just now</div></div>
+    <div class="topbar-right">
+      <div class="date-range">
+        <button class="date-btn" onclick="rng(this)">7D</button><button class="date-btn active" onclick="rng(this)">30D</button><button class="date-btn" onclick="rng(this)">90D</button><button class="date-btn" onclick="rng(this)">1Y</button>
+      </div>
+      <button class="connect-btn" onclick="openModal()">+ Connect Platform</button>
+    </div>
+  </div>
+  <div class="platform-tabs">
+    <div class="ptab all active" onclick="ptabClick(this,'dashboard')">All Platforms</div>
+    <div class="ptab ig" onclick="navToPage('instagram')">📸 Instagram</div>
+    <div class="ptab tt" onclick="navToPage('tiktok')">♪ TikTok</div>
+    <div class="ptab sh" onclick="navToPage('shopify')">🛍 Shopify</div>
+    <div class="ptab meta" onclick="navToPage('meta')">Ⓜ Meta Ads</div>
+    <div class="ptab yt" onclick="navToPage('youtube')">▶ YouTube</div>
+  </div>
+  <div class="kpi-grid cols4">
+    <div id="kpi-dash-reach" class="kpi-card c-green"><div class="kpi-label">Total Reach</div><div class="kpi-value">2.41M</div><div class="kpi-change up">↑ 18.3% <span>vs last period</span></div></div>
+    <div id="kpi-dash-eng" class="kpi-card c-purple"><div class="kpi-label">Avg Engagement</div><div class="kpi-value">6.8%</div><div class="kpi-change up">↑ 2.1% <span>vs last period</span></div></div>
+    <div id="kpi-dash-rev" class="kpi-card c-amber"><div class="kpi-label">Total Revenue</div><div class="kpi-value">$14.2K</div><div class="kpi-change up">↑ 9.7% <span>vs last period</span></div></div>
+    <div id="kpi-dash-roas" class="kpi-card c-blue"><div class="kpi-label">Ad ROAS</div><div class="kpi-value">3.6x</div><div class="kpi-change down">↓ 0.4x <span>vs last period</span></div></div>
+  </div>
+  <div class="grid-2-1">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Combined Reach</div><div class="card-sub">All platforms · 30 days</div></div><div class="card-tag">Export CSV</div></div>
+      <svg class="chart-svg" height="160" viewBox="0 0 540 160">
+        <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00ff88" stop-opacity=".28"/><stop offset="100%" stop-color="#00ff88" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" y1="32" x2="540" y2="32" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="80" x2="540" y2="80" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="128" x2="540" y2="128" stroke="#1c1c2e" stroke-width="1"/>
+        <path d="M0,138 C35,130 55,118 90,108 C120,98 140,116 175,92 C205,70 225,82 255,66 C285,50 305,58 335,40 C365,22 385,46 415,34 C445,22 465,30 495,16 C510,8 525,14 540,10 L540,160 L0,160 Z" fill="url(#g1)"/>
+        <path d="M0,138 C35,130 55,118 90,108 C120,98 140,116 175,92 C205,70 225,82 255,66 C285,50 305,58 335,40 C365,22 385,46 415,34 C445,22 465,30 495,16 C510,8 525,14 540,10" fill="none" stroke="#00ff88" stroke-width="2"/>
+        <circle cx="90" cy="108" r="3" fill="#00ff88"/><circle cx="175" cy="92" r="3" fill="#00ff88"/><circle cx="255" cy="66" r="3" fill="#00ff88"/><circle cx="335" cy="40" r="3" fill="#00ff88"/><circle cx="415" cy="34" r="3" fill="#00ff88"/><circle cx="540" cy="10" r="4" fill="#00ff88" stroke="#08080d" stroke-width="2"/>
+        <text x="0" y="155" fill="#5a5a72" font-size="10" font-family="Space Mono">Mar 1</text><text x="165" y="155" fill="#5a5a72" font-size="10" font-family="Space Mono">Mar 8</text><text x="325" y="155" fill="#5a5a72" font-size="10" font-family="Space Mono">Mar 15</text><text x="472" y="155" fill="#5a5a72" font-size="10" font-family="Space Mono">Mar 22</text>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">By Platform</div><div class="card-sub">Reach share</div></div></div>
+      <div class="pb-list">
+        <div><div class="pb-top"><div class="pb-name">📸 Instagram</div><div class="pb-val" style="color:#fd7e1d">38%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:38%;background:linear-gradient(90deg,#833ab4,#fd1d1d)"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">♪ TikTok</div><div class="pb-val" style="color:#69C9D0">29%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:29%;background:#69C9D0"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Ⓜ Meta Ads</div><div class="pb-val" style="color:#1877f2">18%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:18%;background:#1877f2"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">▶ YouTube</div><div class="pb-val" style="color:#ff4444">10%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:10%;background:#ff4444"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">🛍 Shopify</div><div class="pb-val" style="color:#96bf47">5%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:5%;background:#96bf47"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Top Posts</div><div class="card-sub">Best reach this period</div></div><div class="card-tag">View all</div></div>
+      <div class="posts-list">
+        <div class="post-item"><div class="post-thumb" style="background:linear-gradient(135deg,#833ab4,#fd1d1d)">📸</div><div class="post-info"><div class="post-caption">Behind the scenes: new drop 🔥</div><div class="post-meta">Instagram · 2d ago</div></div><div class="post-stat">84K</div></div>
+        <div class="post-item"><div class="post-thumb" style="background:#0a0a0a">♪</div><div class="post-info"><div class="post-caption">POV: you finally launch the thing</div><div class="post-meta">TikTok · 4d ago</div></div><div class="post-stat">212K</div></div>
+        <div class="post-item"><div class="post-thumb" style="background:#0d1a2e">Ⓜ</div><div class="post-info"><div class="post-caption">Spring Collection — Ad Set A</div><div class="post-meta">Meta Ads · 5d ago</div></div><div class="post-stat">$1.2K</div></div>
+        <div class="post-item"><div class="post-thumb" style="background:#1a0000">▶</div><div class="post-info"><div class="post-caption">How I built this in 30 days</div><div class="post-meta">YouTube · 1w ago</div></div><div class="post-stat">41K</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Top Products</div><div class="card-sub">Shopify · revenue</div></div><div class="card-tag">Shopify ↗</div></div>
+      <div class="products-list">
+        <div class="product-item"><div class="product-rank">01</div><div class="product-info"><div class="product-name">Classic Hoodie – Black</div><div class="product-units">142 units</div></div><div class="product-rev">$4,970</div></div>
+        <div class="product-item"><div class="product-rank">02</div><div class="product-info"><div class="product-name">Logo Tee – White</div><div class="product-units">218 units</div></div><div class="product-rev">$3,488</div></div>
+        <div class="product-item"><div class="product-rank">03</div><div class="product-info"><div class="product-name">Cargo Pants – Olive</div><div class="product-units">67 units</div></div><div class="product-rev">$2,814</div></div>
+        <div class="product-item"><div class="product-rank">04</div><div class="product-info"><div class="product-name">Dad Cap – Tan</div><div class="product-units">95 units</div></div><div class="product-rev">$1,900</div></div>
+      </div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-header"><div class="ai-icon">◈</div><div style="flex:1"><div class="ai-title">AI Advisor</div></div><div class="ai-status-dot"></div></div>
+      <div class="ai-insights">
+        <div class="insight pos">📈 TikTok reach up 34% — "POV" format outperforming all others. Push 2–3x this week.</div>
+        <div class="insight warn">⚠️ Meta ROAS dropped to 3.2x. Pause Ad Set B, reallocate to Set A.</div>
+        <div class="insight tip">💡 Black Hoodie spiked after TikTok. Link campaigns intentionally next drop.</div>
+      </div>
+      <div class="ai-input-row">
+        <input class="ai-input" id="d-ai-in" placeholder="Ask about your data…" onkeydown="if(event.key==='Enter')qAI('d-ai-in','d-ai-r')"/>
+        <button class="ai-send" onclick="qAI('d-ai-in','d-ai-r')">→</button>
+      </div>
+      <div class="ai-response" id="d-ai-r"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTAGRAM -->
+<div class="page" id="page-instagram">
+  <div class="topbar">
+    <div><div class="page-title" style="background:linear-gradient(90deg,#833ab4,#fd1d1d,#fcb045);-webkit-background-clip:text;-webkit-text-fill-color:transparent">📸 Instagram</div><div class="page-sub">@yourbrand · 48.3K followers</div></div>
+    <div class="topbar-right"><div class="date-range"><button class="date-btn" onclick="rng(this)">7D</button><button class="date-btn active" onclick="rng(this)">30D</button><button class="date-btn" onclick="rng(this)">90D</button></div></div>
+  </div>
+  <div class="kpi-grid cols4">
+    <div id="kpi-ig-foll" class="kpi-card c-ig"><div class="kpi-label">Followers</div><div class="kpi-value">48.3K</div><div class="kpi-change up">↑ 1,240 <span>vs last period</span></div></div>
+    <div id="kpi-ig-reach" class="kpi-card c-green"><div class="kpi-label">Reach</div><div class="kpi-value">918K</div><div class="kpi-change up">↑ 22.4% <span>vs last period</span></div></div>
+    <div id="kpi-ig-eng" class="kpi-card c-purple"><div class="kpi-label">Engagement Rate</div><div class="kpi-value">7.2%</div><div class="kpi-change up">↑ 0.8% <span>vs last period</span></div></div>
+    <div id="kpi-ig-vis" class="kpi-card c-amber"><div class="kpi-label">Profile Visits</div><div class="kpi-value">12.1K</div><div class="kpi-change up">↑ 14.3% <span>vs last period</span></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Follower Growth</div><div class="card-sub">Daily net new followers</div></div></div>
+      <svg class="chart-svg" height="140" viewBox="0 0 400 140">
+        <defs><linearGradient id="ig-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fd7e1d" stop-opacity=".3"/><stop offset="100%" stop-color="#fd7e1d" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" y1="28" x2="400" y2="28" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="70" x2="400" y2="70" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="112" x2="400" y2="112" stroke="#1c1c2e" stroke-width="1"/>
+        <path d="M0,110 C20,105 40,100 60,88 C80,76 100,90 130,75 C155,62 175,78 200,60 C225,42 245,55 270,38 C295,21 315,44 345,28 C368,15 385,22 400,14 L400,140 L0,140 Z" fill="url(#ig-g)"/>
+        <path d="M0,110 C20,105 40,100 60,88 C80,76 100,90 130,75 C155,62 175,78 200,60 C225,42 245,55 270,38 C295,21 315,44 345,28 C368,15 385,22 400,14" fill="none" stroke="#fd7e1d" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Engagement by Format</div><div class="card-sub">Avg engagement rate per type</div></div></div>
+      <svg class="chart-svg" height="140" viewBox="0 0 400 140">
+        <rect x="30" y="58" width="55" height="72" rx="4" fill="rgba(253,126,29,.7)"/>
+        <rect x="115" y="28" width="55" height="102" rx="4" fill="rgba(253,126,29,.9)"/>
+        <rect x="200" y="78" width="55" height="52" rx="4" fill="rgba(253,126,29,.5)"/>
+        <rect x="285" y="42" width="55" height="88" rx="4" fill="rgba(253,126,29,.75)"/>
+        <text x="57" y="136" fill="#5a5a72" font-size="10" font-family="Space Mono" text-anchor="middle">Reels</text>
+        <text x="142" y="136" fill="#5a5a72" font-size="10" font-family="Space Mono" text-anchor="middle">Carousel</text>
+        <text x="227" y="136" fill="#5a5a72" font-size="10" font-family="Space Mono" text-anchor="middle">Stories</text>
+        <text x="312" y="136" fill="#5a5a72" font-size="10" font-family="Space Mono" text-anchor="middle">Static</text>
+        <text x="57" y="54" fill="#fd7e1d" font-size="11" font-family="Space Mono" text-anchor="middle">6.1%</text>
+        <text x="142" y="24" fill="#fd7e1d" font-size="11" font-family="Space Mono" text-anchor="middle">9.3%</text>
+        <text x="227" y="74" fill="#fd7e1d" font-size="11" font-family="Space Mono" text-anchor="middle">4.2%</text>
+        <text x="312" y="38" fill="#fd7e1d" font-size="11" font-family="Space Mono" text-anchor="middle">7.8%</text>
+      </svg>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-header"><div><div class="card-title">Top Posts</div><div class="card-sub">Ranked by reach · last 30 days</div></div><div class="card-tag">View on Instagram ↗</div></div>
+    <div class="posts-list">
+      <div class="post-item"><div class="post-thumb" style="background:linear-gradient(135deg,#833ab4,#fd1d1d)">📸</div><div class="post-info"><div class="post-caption">Behind the scenes: new drop 🔥 #streetwear</div><div class="post-meta">Carousel · Mar 18 · 847 likes · 203 comments</div></div><div class="post-badge up">↑ 312%</div><div class="post-stat">84.2K</div></div>
+      <div class="post-item"><div class="post-thumb" style="background:linear-gradient(135deg,#fcb045,#fd1d1d)">🎬</div><div class="post-info"><div class="post-caption">Morning routine as a founder (no filter) ☕</div><div class="post-meta">Reel · Mar 14 · 2.1K likes · 89 comments</div></div><div class="post-badge up">↑ 188%</div><div class="post-stat">62.8K</div></div>
+      <div class="post-item"><div class="post-thumb" style="background:linear-gradient(135deg,#833ab4,#fcb045)">✨</div><div class="post-info"><div class="post-caption">New colourway just dropped — link in bio</div><div class="post-meta">Static · Mar 11 · 1.4K likes · 56 comments</div></div><div class="post-badge up">↑ 92%</div><div class="post-stat">48.1K</div></div>
+      <div class="post-item"><div class="post-thumb" style="background:linear-gradient(135deg,#fd1d1d,#833ab4)">🙌</div><div class="post-info"><div class="post-caption">Community Q&amp;A — you asked, we answered</div><div class="post-meta">Carousel · Mar 6 · 978 likes · 142 comments</div></div><div class="post-badge down">↓ 12%</div><div class="post-stat">31.4K</div></div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card"><div class="card-header"><div><div class="card-title">Best Post Times</div><div class="card-sub">Avg engagement by slot</div></div></div>
+      <table class="metric-table"><thead><tr><th>Time</th><th>Eng Rate</th><th>Reach</th></tr></thead><tbody>
+        <tr><td class="td-name">Tue 7–9 PM</td><td class="td-good">9.4%</td><td class="td-muted">22K avg</td></tr>
+        <tr><td class="td-name">Thu 6–8 PM</td><td class="td-good">8.7%</td><td class="td-muted">19K avg</td></tr>
+        <tr><td class="td-name">Sat 11 AM</td><td class="td-good">7.2%</td><td class="td-muted">16K avg</td></tr>
+        <tr><td class="td-name">Mon 12 PM</td><td class="td-warn">5.1%</td><td class="td-muted">12K avg</td></tr>
+        <tr><td class="td-name">Sun 9 AM</td><td class="td-bad">3.8%</td><td class="td-muted">8K avg</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card"><div class="card-header"><div><div class="card-title">Audience Demographics</div><div class="card-sub">Follower breakdown</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <svg width="120" height="120" viewBox="0 0 36 36" style="margin:0 auto;display:block">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1c1c2e" stroke-width="3.8"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#fd7e1d" stroke-width="3.8" stroke-dasharray="56 44" stroke-dashoffset="25" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#833ab4" stroke-width="3.8" stroke-dasharray="28 72" stroke-dashoffset="-31" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#fcb045" stroke-width="3.8" stroke-dasharray="16 84" stroke-dashoffset="-59" stroke-linecap="round"/>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div class="donut-leg-item"><div class="donut-dot" style="background:#fd7e1d"></div><span style="flex:1;font-size:12px">Female 18–34</span><strong style="font-family:'Space Mono',monospace;font-size:12px">56%</strong></div>
+          <div class="donut-leg-item"><div class="donut-dot" style="background:#833ab4"></div><span style="flex:1;font-size:12px">Male 18–34</span><strong style="font-family:'Space Mono',monospace;font-size:12px">28%</strong></div>
+          <div class="donut-leg-item"><div class="donut-dot" style="background:#fcb045"></div><span style="flex:1;font-size:12px">35–44</span><strong style="font-family:'Space Mono',monospace;font-size:12px">16%</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="card-header"><div><div class="card-title">Account Health</div></div></div>
+      <table class="metric-table"><thead><tr><th>Metric</th><th>Value</th><th>Status</th></tr></thead><tbody>
+        <tr><td class="td-name">Save Rate</td><td class="td-muted">4.8%</td><td class="td-good">↑ Good</td></tr>
+        <tr><td class="td-name">Share Rate</td><td class="td-muted">2.1%</td><td class="td-good">↑ Good</td></tr>
+        <tr><td class="td-name">Story Views</td><td class="td-muted">3.2K avg</td><td class="td-warn">→ Flat</td></tr>
+        <tr><td class="td-name">Link Clicks</td><td class="td-muted">842/mo</td><td class="td-good">↑ +18%</td></tr>
+        <tr><td class="td-name">Unfollow Rate</td><td class="td-muted">0.3%</td><td class="td-good">✓ Low</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- TIKTOK -->
+<div class="page" id="page-tiktok">
+  <div class="topbar">
+    <div><div class="page-title" style="color:#69C9D0">♪ TikTok</div><div class="page-sub">@yourbrand · 91.4K followers</div></div>
+    <div class="topbar-right"><div class="date-range"><button class="date-btn" onclick="rng(this)">7D</button><button class="date-btn active" onclick="rng(this)">30D</button><button class="date-btn" onclick="rng(this)">90D</button></div></div>
+  </div>
+  <div class="kpi-grid cols5">
+    <div id="kpi-tt-foll" class="kpi-card c-tt"><div class="kpi-label">Followers</div><div class="kpi-value">91.4K</div><div class="kpi-change up">↑ 4,820 <span>vs last period</span></div></div>
+    <div id="kpi-tt-views" class="kpi-card c-green"><div class="kpi-label">Total Views</div><div class="kpi-value">1.18M</div><div class="kpi-change up">↑ 34.2% <span>vs last period</span></div></div>
+    <div id="kpi-tt-watch" class="kpi-card c-purple"><div class="kpi-label">Avg Watch Time</div><div class="kpi-value">68%</div><div class="kpi-change up">↑ 8% <span>vs last period</span></div></div>
+    <div id="kpi-tt-shares" class="kpi-card c-amber"><div class="kpi-label">Shares</div><div class="kpi-value">8,421</div><div class="kpi-change up">↑ 41% <span>vs last period</span></div></div>
+    <div id="kpi-tt-fyp" class="kpi-card c-blue"><div class="kpi-label">FYP Rate</div><div class="kpi-value">72%</div><div class="kpi-change up">↑ 5% <span>vs last period</span></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Views Over Time</div><div class="card-sub">Daily · 30 days</div></div></div>
+      <svg class="chart-svg" height="140" viewBox="0 0 400 140">
+        <defs><linearGradient id="tt-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#69C9D0" stop-opacity=".3"/><stop offset="100%" stop-color="#69C9D0" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" y1="28" x2="400" y2="28" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="70" x2="400" y2="70" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="112" x2="400" y2="112" stroke="#1c1c2e" stroke-width="1"/>
+        <path d="M0,120 C20,115 35,105 55,100 C70,95 80,118 110,88 C135,62 145,90 175,55 C200,25 210,70 240,50 C265,34 280,60 310,32 C335,10 355,38 385,20 L400,15 L400,140 L0,140 Z" fill="url(#tt-g)"/>
+        <path d="M0,120 C20,115 35,105 55,100 C70,95 80,118 110,88 C135,62 145,90 175,55 C200,25 210,70 240,50 C265,34 280,60 310,32 C335,10 355,38 385,20 L400,15" fill="none" stroke="#69C9D0" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Completion Rate by Length</div></div></div>
+      <svg class="chart-svg" height="140" viewBox="0 0 400 140">
+        <rect x="20" y="38" width="50" height="92" rx="4" fill="rgba(105,201,208,.65)"/>
+        <rect x="95" y="18" width="50" height="112" rx="4" fill="rgba(105,201,208,.85)"/>
+        <rect x="170" y="54" width="50" height="76" rx="4" fill="rgba(105,201,208,.5)"/>
+        <rect x="245" y="28" width="50" height="102" rx="4" fill="rgba(105,201,208,.75)"/>
+        <rect x="320" y="10" width="50" height="120" rx="4" fill="rgba(105,201,208,.95)"/>
+        <text x="45" y="136" fill="#5a5a72" font-size="9" font-family="Space Mono" text-anchor="middle">&lt;15s</text>
+        <text x="120" y="136" fill="#5a5a72" font-size="9" font-family="Space Mono" text-anchor="middle">15–30s</text>
+        <text x="195" y="136" fill="#5a5a72" font-size="9" font-family="Space Mono" text-anchor="middle">30–45s</text>
+        <text x="270" y="136" fill="#5a5a72" font-size="9" font-family="Space Mono" text-anchor="middle">45–60s</text>
+        <text x="345" y="136" fill="#5a5a72" font-size="9" font-family="Space Mono" text-anchor="middle">&gt;60s</text>
+        <text x="45" y="34" fill="#69C9D0" font-size="10" font-family="Space Mono" text-anchor="middle">58%</text>
+        <text x="120" y="14" fill="#69C9D0" font-size="10" font-family="Space Mono" text-anchor="middle">71%</text>
+        <text x="195" y="50" fill="#69C9D0" font-size="10" font-family="Space Mono" text-anchor="middle">48%</text>
+        <text x="270" y="24" fill="#69C9D0" font-size="10" font-family="Space Mono" text-anchor="middle">65%</text>
+        <text x="345" y="6" fill="#69C9D0" font-size="10" font-family="Space Mono" text-anchor="middle">82%</text>
+      </svg>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-header"><div><div class="card-title">Top Videos</div><div class="card-sub">Last 30 days · by views</div></div><div class="card-tag">View on TikTok ↗</div></div>
+    <div class="video-row"><div class="video-thumb" style="background:#0d1a1a">♪</div><div class="video-info"><div class="video-title">POV: you finally launch the thing (founder life 🧠)</div><div class="video-meta">Mar 17 · 0:38 · Duet enabled</div></div><div class="video-stats"><div class="vs"><div class="vs-val" style="color:#69C9D0">212K</div><div class="vs-lbl">views</div></div><div class="vs"><div class="vs-val" style="color:var(--accent)">18.4K</div><div class="vs-lbl">likes</div></div><div class="vs"><div class="vs-val" style="color:var(--amber)">82%</div><div class="vs-lbl">completion</div></div></div></div>
+    <div class="video-row"><div class="video-thumb" style="background:#0d1a1a">🔥</div><div class="video-info"><div class="video-title">Unboxing our new drop — first look 👀</div><div class="video-meta">Mar 12 · 0:52 · 841 shares</div></div><div class="video-stats"><div class="vs"><div class="vs-val" style="color:#69C9D0">148K</div><div class="vs-lbl">views</div></div><div class="vs"><div class="vs-val" style="color:var(--accent)">12.1K</div><div class="vs-lbl">likes</div></div><div class="vs"><div class="vs-val" style="color:var(--amber)">74%</div><div class="vs-lbl">completion</div></div></div></div>
+    <div class="video-row"><div class="video-thumb" style="background:#0d1a1a">💡</div><div class="video-info"><div class="video-title">3 things I wish I knew before starting my brand</div><div class="video-meta">Mar 8 · 1:12 · 2.3K saves</div></div><div class="video-stats"><div class="vs"><div class="vs-val" style="color:#69C9D0">94K</div><div class="vs-lbl">views</div></div><div class="vs"><div class="vs-val" style="color:var(--accent)">8.8K</div><div class="vs-lbl">likes</div></div><div class="vs"><div class="vs-val" style="color:var(--amber)">79%</div><div class="vs-lbl">completion</div></div></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card"><div class="card-header"><div><div class="card-title">Audience Age Split</div></div></div>
+      <table class="metric-table"><thead><tr><th>Age Group</th><th>Share</th><th>Gender</th></tr></thead><tbody>
+        <tr><td class="td-name">18–24</td><td class="td-good">48%</td><td class="td-muted">52F / 48M</td></tr>
+        <tr><td class="td-name">25–34</td><td class="td-good">31%</td><td class="td-muted">44F / 56M</td></tr>
+        <tr><td class="td-name">35–44</td><td class="td-warn">14%</td><td class="td-muted">38F / 62M</td></tr>
+        <tr><td class="td-name">45+</td><td class="td-bad">7%</td><td class="td-muted">—</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card"><div class="card-header"><div><div class="card-title">Top Hashtags &amp; Sounds</div></div></div>
+      <table class="metric-table"><thead><tr><th>Tag / Sound</th><th>Posts</th><th>Reach Boost</th></tr></thead><tbody>
+        <tr><td class="td-name">Trending Sound A</td><td class="td-muted">3</td><td class="td-good">+61%</td></tr>
+        <tr><td class="td-name">#streetwear</td><td class="td-muted">8</td><td class="td-good">+34%</td></tr>
+        <tr><td class="td-name">#founder</td><td class="td-muted">5</td><td class="td-good">+28%</td></tr>
+        <tr><td class="td-name">#smallbusiness</td><td class="td-muted">6</td><td class="td-warn">+12%</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- SHOPIFY -->
+<div class="page" id="page-shopify">
+  <div class="topbar">
+    <div><div class="page-title" style="color:#96bf47">🛍 Shopify Store</div><div class="page-sub">yourbrand.myshopify.com · 342 orders this period</div></div>
+    <div class="topbar-right"><div class="date-range"><button class="date-btn" onclick="rng(this)">7D</button><button class="date-btn active" onclick="rng(this)">30D</button><button class="date-btn" onclick="rng(this)">90D</button></div></div>
+  </div>
+  <div class="kpi-grid cols4">
+    <div id="kpi-sh-rev" class="kpi-card c-sh"><div class="kpi-label">Revenue</div><div class="kpi-value">$14.2K</div><div class="kpi-change up">↑ 9.7% <span>vs last period</span></div></div>
+    <div id="kpi-sh-orders" class="kpi-card c-amber"><div class="kpi-label">Orders</div><div class="kpi-value">342</div><div class="kpi-change up">↑ 18 <span>vs last period</span></div></div>
+    <div id="kpi-sh-aov" class="kpi-card c-blue"><div class="kpi-label">Avg Order Value</div><div class="kpi-value">$41.50</div><div class="kpi-change up">↑ $3.20 <span>vs last period</span></div></div>
+    <div id="kpi-sh-conv" class="kpi-card c-purple"><div class="kpi-label">Conv. Rate</div><div class="kpi-value">3.2%</div><div class="kpi-change down">↓ 0.4% <span>vs last period</span></div></div>
+  </div>
+  <div class="grid-2-1">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Revenue Over Time</div><div class="card-sub">Daily revenue · 30 days</div></div><div class="card-tag">Export</div></div>
+      <svg class="chart-svg" height="150" viewBox="0 0 540 150">
+        <defs><linearGradient id="sh-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#96bf47" stop-opacity=".3"/><stop offset="100%" stop-color="#96bf47" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" y1="30" x2="540" y2="30" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="75" x2="540" y2="75" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="120" x2="540" y2="120" stroke="#1c1c2e" stroke-width="1"/>
+        <path d="M0,130 C30,125 50,115 80,100 C110,85 130,108 165,88 C195,70 215,92 245,74 C275,56 295,68 330,48 C360,30 380,52 415,36 C445,22 465,40 495,24 C515,12 528,18 540,14 L540,150 L0,150 Z" fill="url(#sh-g)"/>
+        <path d="M0,130 C30,125 50,115 80,100 C110,85 130,108 165,88 C195,70 215,92 245,74 C275,56 295,68 330,48 C360,30 380,52 415,36 C445,22 465,40 495,24 C515,12 528,18 540,14" fill="none" stroke="#96bf47" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Traffic Sources</div><div class="card-sub">Where buyers came from</div></div></div>
+      <div class="pb-list">
+        <div><div class="pb-top"><div class="pb-name">TikTok</div><div class="pb-val" style="color:#69C9D0">34%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:34%;background:#69C9D0"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Instagram</div><div class="pb-val" style="color:#fd7e1d">28%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:28%;background:linear-gradient(90deg,#833ab4,#fd1d1d)"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Meta Ads</div><div class="pb-val" style="color:#1877f2">22%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:22%;background:#1877f2"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Direct / Email</div><div class="pb-val" style="color:#96bf47">11%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:11%;background:#96bf47"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Other</div><div class="pb-val" style="color:var(--muted2)">5%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:5%;background:var(--muted)"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><div class="card-title">Product Performance</div><div class="card-sub">All products · ranked by revenue</div></div><div class="card-tag">View in Shopify ↗</div></div>
+    <table class="metric-table">
+      <thead><tr><th>#</th><th>Product</th><th>Units</th><th>Revenue</th><th>Margin</th><th>Returns</th></tr></thead>
+      <tbody>
+        <tr><td class="td-muted">01</td><td class="td-name">Classic Hoodie – Black</td><td class="td-muted">142</td><td class="td-good">$4,970</td><td class="td-good">62%</td><td class="td-good">1.4%</td></tr>
+        <tr><td class="td-muted">02</td><td class="td-name">Logo Tee – White</td><td class="td-muted">218</td><td class="td-good">$3,488</td><td class="td-good">71%</td><td class="td-good">0.9%</td></tr>
+        <tr><td class="td-muted">03</td><td class="td-name">Cargo Pants – Olive</td><td class="td-muted">67</td><td class="td-good">$2,814</td><td class="td-warn">48%</td><td class="td-warn">3.1%</td></tr>
+        <tr><td class="td-muted">04</td><td class="td-name">Dad Cap – Tan</td><td class="td-muted">95</td><td class="td-good">$1,900</td><td class="td-good">78%</td><td class="td-good">0.5%</td></tr>
+        <tr><td class="td-muted">05</td><td class="td-name">Zip Pouch – Navy</td><td class="td-muted">53</td><td class="td-warn">$1,060</td><td class="td-good">66%</td><td class="td-bad">5.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- META ADS -->
+<div class="page" id="page-meta">
+  <div class="topbar">
+    <div><div class="page-title" style="color:#1877f2">Ⓜ Meta Ads</div><div class="page-sub">Facebook &amp; Instagram Ads · $2,840 spend this period</div></div>
+    <div class="topbar-right"><div class="date-range"><button class="date-btn" onclick="rng(this)">7D</button><button class="date-btn active" onclick="rng(this)">30D</button><button class="date-btn" onclick="rng(this)">90D</button></div></div>
+  </div>
+  <div class="kpi-grid cols4">
+    <div id="kpi-mt-spend" class="kpi-card c-meta"><div class="kpi-label">Total Spend</div><div class="kpi-value">$2,840</div><div class="kpi-change down">↑ $340 <span>vs last period</span></div></div>
+    <div id="kpi-mt-roas" class="kpi-card c-amber"><div class="kpi-label">ROAS</div><div class="kpi-value">3.6x</div><div class="kpi-change down">↓ 0.4x <span>vs last period</span></div></div>
+    <div id="kpi-mt-impr" class="kpi-card c-green"><div class="kpi-label">Impressions</div><div class="kpi-value">448K</div><div class="kpi-change up">↑ 12.2% <span>vs last period</span></div></div>
+    <div id="kpi-mt-cpc" class="kpi-card c-purple"><div class="kpi-label">Avg CPC</div><div class="kpi-value">$0.84</div><div class="kpi-change up">↓ $0.12 cheaper <span>vs last period</span></div></div>
+  </div>
+  <div class="card" style="margin-bottom:18px">
+    <div class="card-header"><div><div class="card-title">Active Campaigns</div><div class="card-sub">Live performance</div></div><div class="card-tag">Open Ads Manager ↗</div></div>
+    <div class="ad-row"><div class="ad-status live"></div><div class="ad-info"><div class="ad-name">Spring Collection — Ad Set A</div><div class="ad-meta">Retargeting · Instagram Feed + Reels · $40/day</div></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-val" style="color:var(--accent)">4.8x</div><div class="ad-stat-lbl">ROAS</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--blue)">$0.72</div><div class="ad-stat-lbl">CPC</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--amber)">3.1%</div><div class="ad-stat-lbl">CTR</div></div></div></div>
+    <div class="ad-row"><div class="ad-status paused"></div><div class="ad-info"><div class="ad-name">Spring Collection — Ad Set B</div><div class="ad-meta">Cold audience · Facebook Feed · $30/day — ⚠️ Paused by AI Advisor</div></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-val" style="color:var(--red)">2.1x</div><div class="ad-stat-lbl">ROAS</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--amber)">$1.24</div><div class="ad-stat-lbl">CPC</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--red)">1.2%</div><div class="ad-stat-lbl">CTR</div></div></div></div>
+    <div class="ad-row"><div class="ad-status live"></div><div class="ad-info"><div class="ad-name">Brand Awareness — Broad</div><div class="ad-meta">Lookalike 1% · IG + FB · $25/day</div></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-val" style="color:var(--accent)">3.9x</div><div class="ad-stat-lbl">ROAS</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--blue)">$0.91</div><div class="ad-stat-lbl">CPC</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--amber)">2.4%</div><div class="ad-stat-lbl">CTR</div></div></div></div>
+    <div class="ad-row"><div class="ad-status stopped"></div><div class="ad-info"><div class="ad-name">Winter Clearance — Ended</div><div class="ad-meta">Conversion · All placements · Campaign complete</div></div><div class="ad-stats"><div class="ad-stat"><div class="ad-stat-val" style="color:var(--muted2)">3.2x</div><div class="ad-stat-lbl">ROAS</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--muted2)">$0.98</div><div class="ad-stat-lbl">CPC</div></div><div class="ad-stat"><div class="ad-stat-val" style="color:var(--muted2)">2.0%</div><div class="ad-stat-lbl">CTR</div></div></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Spend vs Revenue</div><div class="card-sub">Daily comparison</div></div></div>
+      <svg class="chart-svg" height="140" viewBox="0 0 400 140">
+        <line x1="0" y1="28" x2="400" y2="28" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="70" x2="400" y2="70" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="112" x2="400" y2="112" stroke="#1c1c2e" stroke-width="1"/>
+        <path d="M0,100 C30,95 60,90 90,85 C120,80 150,88 180,82 C210,76 240,80 270,72 C300,64 330,68 360,58 C380,52 392,48 400,44" fill="none" stroke="#1877f2" stroke-width="2"/>
+        <path d="M0,72 C30,62 60,50 90,44 C120,36 150,52 180,38 C210,24 240,40 270,28 C300,16 330,30 360,18 C380,10 392,12 400,8" fill="none" stroke="#96bf47" stroke-width="2" stroke-dasharray="4 3"/>
+        <text x="10" y="135" fill="#1877f2" font-size="10" font-family="Space Mono">— Spend</text>
+        <text x="100" y="135" fill="#96bf47" font-size="10" font-family="Space Mono">- - Revenue</text>
+      </svg>
+    </div>
+    <div class="card"><div class="card-header"><div><div class="card-title">ROAS by Audience</div></div></div>
+      <table class="metric-table"><thead><tr><th>Audience</th><th>ROAS</th><th>Spend</th></tr></thead><tbody>
+        <tr><td class="td-name">Retargeting</td><td class="td-good">4.8x</td><td class="td-muted">$800</td></tr>
+        <tr><td class="td-name">Lookalike 1%</td><td class="td-good">3.9x</td><td class="td-muted">$750</td></tr>
+        <tr><td class="td-name">Lookalike 3%</td><td class="td-warn">2.8x</td><td class="td-muted">$590</td></tr>
+        <tr><td class="td-name">Interest Based</td><td class="td-warn">2.4x</td><td class="td-muted">$420</td></tr>
+        <tr><td class="td-name">Broad Cold</td><td class="td-bad">2.1x</td><td class="td-muted">$280</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- YOUTUBE -->
+<div class="page" id="page-youtube">
+  <div class="topbar">
+    <div><div class="page-title" style="color:#ff4444">▶ YouTube</div><div class="page-sub">Your Brand Channel · 12.4K subscribers</div></div>
+    <div class="topbar-right"><div class="date-range"><button class="date-btn" onclick="rng(this)">7D</button><button class="date-btn active" onclick="rng(this)">30D</button><button class="date-btn" onclick="rng(this)">90D</button></div></div>
+  </div>
+  <div class="kpi-grid cols4">
+    <div id="kpi-yt-subs" class="kpi-card c-yt"><div class="kpi-label">Subscribers</div><div class="kpi-value">12.4K</div><div class="kpi-change up">↑ 830 <span>vs last period</span></div></div>
+    <div id="kpi-yt-views" class="kpi-card c-blue"><div class="kpi-label">Total Views</div><div class="kpi-value">241K</div><div class="kpi-change up">↑ 28.4% <span>vs last period</span></div></div>
+    <div id="kpi-yt-hours" class="kpi-card c-green"><div class="kpi-label">Watch Hours</div><div class="kpi-value">3,820</div><div class="kpi-change up">↑ 19% <span>vs last period</span></div></div>
+    <div id="kpi-yt-dur" class="kpi-card c-amber"><div class="kpi-label">Avg View Duration</div><div class="kpi-value">6:42</div><div class="kpi-change up">↑ 0:48 <span>vs last period</span></div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><div><div class="card-title">Views Over Time</div><div class="card-sub">Daily views · 30 days</div></div></div>
+      <svg class="chart-svg" height="140" viewBox="0 0 400 140">
+        <defs><linearGradient id="yt-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff4444" stop-opacity=".25"/><stop offset="100%" stop-color="#ff4444" stop-opacity="0"/></linearGradient></defs>
+        <line x1="0" y1="35" x2="400" y2="35" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="87" x2="400" y2="87" stroke="#1c1c2e" stroke-width="1"/><line x1="0" y1="115" x2="400" y2="115" stroke="#1c1c2e" stroke-width="1"/>
+        <path d="M0,115 C25,112 45,108 70,100 C90,92 105,110 130,88 C150,70 165,96 195,72 C220,52 235,78 265,54 C290,34 305,58 335,38 C358,22 378,36 400,22 L400,140 L0,140 Z" fill="url(#yt-g)"/>
+        <path d="M0,115 C25,112 45,108 70,100 C90,92 105,110 130,88 C150,70 165,96 195,72 C220,52 235,78 265,54 C290,34 305,58 335,38 C358,22 378,36 400,22" fill="none" stroke="#ff4444" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="card"><div class="card-header"><div><div class="card-title">Traffic Sources</div></div></div>
+      <div class="pb-list">
+        <div><div class="pb-top"><div class="pb-name">YouTube Search</div><div class="pb-val" style="color:#ff4444">41%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:41%;background:#ff4444"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Suggested Videos</div><div class="pb-val" style="color:#ff8888">28%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:28%;background:#ff8888"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">External (TikTok)</div><div class="pb-val" style="color:#69C9D0">18%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:18%;background:#69C9D0"></div></div></div>
+        <div><div class="pb-top"><div class="pb-name">Browse Features</div><div class="pb-val" style="color:var(--muted2)">13%</div></div><div class="pb-bar-bg"><div class="pb-bar" style="width:13%;background:var(--muted)"></div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div><div class="card-title">Top Videos</div><div class="card-sub">Last 30 days · by views</div></div><div class="card-tag">YouTube Studio ↗</div></div>
+    <div class="video-row"><div class="video-thumb" style="background:#1a0000">🎬</div><div class="video-info"><div class="video-title">How I built this in 30 days (full breakdown)</div><div class="video-meta">Mar 15 · 14:32 · 312 likes · 48 comments</div></div><div class="video-stats"><div class="vs"><div class="vs-val" style="color:#ff4444">41.2K</div><div class="vs-lbl">views</div></div><div class="vs"><div class="vs-val" style="color:var(--accent)">8:14</div><div class="vs-lbl">avg watch</div></div><div class="vs"><div class="vs-val" style="color:var(--amber)">58%</div><div class="vs-lbl">retention</div></div></div></div>
+    <div class="video-row"><div class="video-thumb" style="background:#1a0000">💰</div><div class="video-info"><div class="video-title">Month 6 revenue reveal — the real numbers</div><div class="video-meta">Mar 8 · 11:18 · 241 likes · 62 comments</div></div><div class="video-stats"><div class="vs"><div class="vs-val" style="color:#ff4444">28.6K</div><div class="vs-lbl">views</div></div><div class="vs"><div class="vs-val" style="color:var(--accent)">6:52</div><div class="vs-lbl">avg watch</div></div><div class="vs"><div class="vs-val" style="color:var(--amber)">61%</div><div class="vs-lbl">retention</div></div></div></div>
+    <div class="video-row"><div class="video-thumb" style="background:#1a0000">🧠</div><div class="video-info"><div class="video-title">Why I quit my job to sell hoodies (not clickbait)</div><div class="video-meta">Mar 2 · 9:44 · 188 likes · 34 comments</div></div><div class="video-stats"><div class="vs"><div class="vs-val" style="color:#ff4444">18.4K</div><div class="vs-lbl">views</div></div><div class="vs"><div class="vs-val" style="color:var(--accent)">5:28</div><div class="vs-lbl">avg watch</div></div><div class="vs"><div class="vs-val" style="color:var(--amber)">56%</div><div class="vs-lbl">retention</div></div></div></div>
+  </div>
+</div>
+
+<!-- AI ADVISOR -->
+<div class="page" id="page-ai">
+  <div class="topbar"><div><div class="page-title" style="color:#a78bfa">◈ AI Advisor</div><div class="page-sub">Analysing all 5 connected platforms in real time</div></div></div>
+  <div class="grid-1-2">
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div><div class="card-title">Weekly Digest</div><div class="card-sub">Auto-generated · Mar 22</div></div></div>
+        <div class="ai-insights" style="margin-bottom:0">
+          <div class="insight pos">📈 Best week yet — combined reach hit 680K across all platforms.</div>
+          <div class="insight warn">⚠️ Meta Ad Set B underperforming at 2.1x ROAS. Recommend pausing.</div>
+          <div class="insight tip">💡 TikTok videos over 60s outperform shorter ones by 34% this month.</div>
+          <div class="insight pos">🛍 Black Hoodie = 35% of all Shopify revenue. Consider a colourway drop.</div>
+          <div class="insight warn">⚠️ Instagram Story views flat. Try interactive polls to boost reach.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div><div class="card-title">Action Plan</div><div class="card-sub">Ranked by impact</div></div></div>
+        <table class="metric-table"><thead><tr><th>Action</th><th>Platform</th><th>Impact</th></tr></thead><tbody>
+          <tr><td class="td-name">Post 2 TikToks this week</td><td class="td-muted">TikTok</td><td class="td-good">High</td></tr>
+          <tr><td class="td-name">Pause Meta Ad Set B</td><td class="td-muted">Meta</td><td class="td-good">High</td></tr>
+          <tr><td class="td-name">New Hoodie colourway campaign</td><td class="td-muted">All</td><td class="td-good">High</td></tr>
+          <tr><td class="td-name">Add polls to IG Stories</td><td class="td-muted">Instagram</td><td class="td-warn">Medium</td></tr>
+          <tr><td class="td-name">Repurpose top TikTok to Shorts</td><td class="td-muted">YouTube</td><td class="td-warn">Medium</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="ai-panel" style="display:flex;flex-direction:column;">
+      <div class="ai-header"><div class="ai-icon">◈</div><div style="flex:1"><div class="ai-title">Chat with AI Advisor</div><div style="font-size:11px;color:var(--muted2);margin-top:2px">Ask anything about your data across all platforms</div></div><div class="ai-status-dot"></div></div>
+      <div class="prompt-chips">
+        <div class="pchip" onclick="aiPrompt('Why is my ROAS dropping?')">Why is my ROAS dropping?</div>
+        <div class="pchip" onclick="aiPrompt('What should I post this week?')">What to post this week?</div>
+        <div class="pchip" onclick="aiPrompt('Which platform should I double down on?')">Which platform to focus on?</div>
+        <div class="pchip" onclick="aiPrompt('What is my best performing product?')">Best product?</div>
+      </div>
+      <div class="chat-window" id="chat-win">
+        <div class="chat-msg ai">Hey! I've analysed all your connected platforms. You're having a great month — reach is up 18% overall. What would you like to dig into?</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-in" placeholder="Ask about your analytics…" onkeydown="if(event.key==='Enter')chatSend()"/>
+        <button class="chat-send-btn" onclick="chatSend()">Ask →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="topbar"><div><div class="page-title">Settings</div><div class="page-sub">Manage your account, platforms, and preferences</div></div></div>
+  <div class="grid-2">
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="settings-section-title">Connected Platforms</div>
+        <div class="setting-row"><div><div class="setting-label">📸 Instagram</div><div class="setting-sub">@yourbrand · Connected Mar 1</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">♪ TikTok</div><div class="setting-sub">@yourbrand · Connected Mar 1</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">🛍 Shopify</div><div class="setting-sub">yourbrand.myshopify.com</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Ⓜ Meta Ads</div><div class="setting-sub">Business Account</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">▶ YouTube</div><div class="setting-sub">Your Brand Channel</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">🐦 X / Twitter</div><div class="setting-sub">Not connected</div></div><div style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600" onclick="openModal()">+ Connect</div></div>
+      </div>
+      <div class="card">
+        <div class="settings-section-title">Notifications</div>
+        <div class="setting-row"><div><div class="setting-label">AI Weekly Digest</div><div class="setting-sub">AI-generated weekly summary email</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">ROAS Alerts</div><div class="setting-sub">Alert when ROAS drops below threshold</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Viral Post Alerts</div><div class="setting-sub">Notify on 10x reach spike</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Monthly PDF Report</div><div class="setting-sub">Full report to your inbox</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="settings-section-title">Account</div>
+        <div class="setting-row"><div><div class="setting-label">Full Name</div><div class="setting-sub">John Doe</div></div><div style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">Edit</div></div>
+        <div class="setting-row"><div><div class="setting-label">Email</div><div class="setting-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="600a0f080e20190f15120212010e044e030f0d">[email&#160;protected]</a></div></div><div style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">Edit</div></div>
+        <div class="setting-row"><div><div class="setting-label">Plan</div><div class="setting-sub">Pro · $29/mo · Renews Apr 1</div></div><div style="font-size:12px;color:var(--accent);cursor:pointer;font-weight:600">Upgrade</div></div>
+        <div class="setting-row"><div><div class="setting-label">Data Refresh Rate</div></div><select class="setting-select"><option>Every 4 hours</option><option>Every hour</option><option>Every 24 hours</option></select></div>
+      </div>
+      <div class="card">
+        <div class="settings-section-title">AI Advisor</div>
+        <div class="setting-row"><div><div class="setting-label">AI Insights on Dashboard</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Auto-Pause Underperforming Ads</div><div class="setting-sub">Pauses Meta ads below 2.5x ROAS</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Best Time to Post Suggestions</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+        <div class="setting-row"><div><div class="setting-label">Tone of Advice</div></div><select class="setting-select"><option>Direct &amp; Bold</option><option>Detailed &amp; Thorough</option><option>Simple &amp; Brief</option></select></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Connect a Platform</div>
+    <div class="modal-sub">Mainframe reads your analytics only — it never posts on your behalf.</div>
+    <div class="plat-grid">
+      <div class="plat-opt connected" onclick="togglePlat(this)"><span>📸</span> Instagram<span class="conn-badge">CONNECTED</span></div>
+      <div class="plat-opt connected" onclick="togglePlat(this)"><span>♪</span> TikTok<span class="conn-badge">CONNECTED</span></div>
+      <div class="plat-opt connected" onclick="togglePlat(this)"><span>🛍</span> Shopify<span class="conn-badge">CONNECTED</span></div>
+      <div class="plat-opt connected" onclick="togglePlat(this)"><span>Ⓜ</span> Meta Ads<span class="conn-badge">CONNECTED</span></div>
+      <div class="plat-opt connected" onclick="togglePlat(this)"><span>▶</span> YouTube<span class="conn-badge">CONNECTED</span></div>
+      <div class="plat-opt" onclick="togglePlat(this)"><span>🐦</span> X / Twitter</div>
+      <div class="plat-opt" onclick="togglePlat(this)"><span>💼</span> LinkedIn</div>
+      <div class="plat-opt" onclick="togglePlat(this)"><span>📌</span> Pinterest</div>
+    </div>
+    <button class="modal-close-btn" onclick="closeModal()">Done</button>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function goPage(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + el.dataset.page).classList.add('active');
+}
+function navToPage(id) {
+  const el = document.querySelector('[data-page="' + id + '"]');
+  if (el) goPage(el);
+}
+function ptabClick(el) {
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+// ── TIME RANGE DATA ──
+const rangeData = {
+  '7D': {
+    dashboard: { reach:'612K', eng:'7.4%', rev:'$3.1K', roas:'4.1x', reachChg:'up|↑ 8.2%', engChg:'up|↑ 1.4%', revChg:'up|↑ 12.1%', roasChg:'up|↑ 0.3x' },
+    instagram: { followers:'48.3K', reach:'214K', eng:'8.1%', visits:'2.8K', follChg:'up|↑ 290', reachChg:'up|↑ 18.4%', engChg:'up|↑ 1.2%', visChg:'up|↑ 9.1%' },
+    tiktok:    { followers:'91.4K', views:'298K', watch:'71%', shares:'2.1K', fyp:'75%', follChg:'up|↑ 1,240', viewChg:'up|↑ 28.4%', watchChg:'up|↑ 6%', shareChg:'up|↑ 38%', fypChg:'up|↑ 3%' },
+    shopify:   { rev:'$3.1K', orders:'78', aov:'$39.70', conv:'3.4%', revChg:'up|↑ 12.1%', ordChg:'up|↑ 5', aovChg:'up|↑ $1.80', convChg:'up|↑ 0.2%' },
+    meta:      { spend:'$620', roas:'4.1x', impr:'102K', cpc:'$0.78', spendChg:'down|↑ $80', roasChg:'up|↑ 0.5x', imprChg:'up|↑ 9.1%', cpcChg:'up|↓ $0.06 cheaper' },
+    youtube:   { subs:'12.4K', views:'54K', hours:'810', dur:'6:58', subChg:'up|↑ 190', viewChg:'up|↑ 31.2%', hourChg:'up|↑ 22%', durChg:'up|↑ 1:02' },
+  },
+  '30D': {
+    dashboard: { reach:'2.41M', eng:'6.8%', rev:'$14.2K', roas:'3.6x', reachChg:'up|↑ 18.3%', engChg:'up|↑ 2.1%', revChg:'up|↑ 9.7%', roasChg:'down|↓ 0.4x' },
+    instagram: { followers:'48.3K', reach:'918K', eng:'7.2%', visits:'12.1K', follChg:'up|↑ 1,240', reachChg:'up|↑ 22.4%', engChg:'up|↑ 0.8%', visChg:'up|↑ 14.3%' },
+    tiktok:    { followers:'91.4K', views:'1.18M', watch:'68%', shares:'8,421', fyp:'72%', follChg:'up|↑ 4,820', viewChg:'up|↑ 34.2%', watchChg:'up|↑ 8%', shareChg:'up|↑ 41%', fypChg:'up|↑ 5%' },
+    shopify:   { rev:'$14.2K', orders:'342', aov:'$41.50', conv:'3.2%', revChg:'up|↑ 9.7%', ordChg:'up|↑ 18', aovChg:'up|↑ $3.20', convChg:'down|↓ 0.4%' },
+    meta:      { spend:'$2,840', roas:'3.6x', impr:'448K', cpc:'$0.84', spendChg:'down|↑ $340', roasChg:'down|↓ 0.4x', imprChg:'up|↑ 12.2%', cpcChg:'up|↓ $0.12 cheaper' },
+    youtube:   { subs:'12.4K', views:'241K', hours:'3,820', dur:'6:42', subChg:'up|↑ 830', viewChg:'up|↑ 28.4%', hourChg:'up|↑ 19%', durChg:'up|↑ 0:48' },
+  },
+  '90D': {
+    dashboard: { reach:'6.8M', eng:'6.2%', rev:'$38.9K', roas:'3.4x', reachChg:'up|↑ 31.4%', engChg:'down|↓ 0.6%', revChg:'up|↑ 24.1%', roasChg:'down|↓ 0.8x' },
+    instagram: { followers:'48.3K', reach:'2.4M', eng:'6.8%', visits:'34.2K', follChg:'up|↑ 3,810', reachChg:'up|↑ 29.1%', engChg:'down|↓ 0.4%', visChg:'up|↑ 22.8%' },
+    tiktok:    { followers:'91.4K', views:'3.2M', watch:'64%', shares:'22.4K', fyp:'69%', follChg:'up|↑ 14.2K', viewChg:'up|↑ 52.1%', watchChg:'down|↓ 4%', shareChg:'up|↑ 68%', fypChg:'up|↑ 8%' },
+    shopify:   { rev:'$38.9K', orders:'924', aov:'$42.10', conv:'3.0%', revChg:'up|↑ 24.1%', ordChg:'up|↑ 112', aovChg:'up|↑ $4.40', convChg:'down|↓ 0.8%' },
+    meta:      { spend:'$7,920', roas:'3.4x', impr:'1.18M', cpc:'$0.91', spendChg:'down|↑ $1,240', roasChg:'down|↓ 0.8x', imprChg:'up|↑ 28.4%', cpcChg:'down|↑ $0.07' },
+    youtube:   { subs:'12.4K', views:'680K', hours:'10.2K', dur:'6:18', subChg:'up|↑ 2,410', viewChg:'up|↑ 48.2%', hourChg:'up|↑ 41%', durChg:'up|↑ 0:22' },
+  },
+  '1Y': {
+    dashboard: { reach:'24.1M', eng:'5.8%', rev:'$142K', roas:'3.1x', reachChg:'up|↑ 84.2%', engChg:'down|↓ 1.2%', revChg:'up|↑ 118%', roasChg:'down|↓ 1.2x' },
+    instagram: { followers:'48.3K', reach:'9.1M', eng:'6.1%', visits:'128K', follChg:'up|↑ 18.4K', reachChg:'up|↑ 74.1%', engChg:'down|↓ 1.1%', visChg:'up|↑ 88.4%' },
+    tiktok:    { followers:'91.4K', views:'11.8M', watch:'61%', shares:'88.2K', fyp:'68%', follChg:'up|↑ 62.1K', viewChg:'up|↑ 210%', watchChg:'down|↓ 7%', shareChg:'up|↑ 214%', fypChg:'up|↑ 14%' },
+    shopify:   { rev:'$142K', orders:'3,421', aov:'$41.50', conv:'2.8%', revChg:'up|↑ 118%', ordChg:'up|↑ 1,840', aovChg:'up|↑ $6.20', convChg:'down|↓ 1.4%' },
+    meta:      { spend:'$28.4K', roas:'3.1x', impr:'4.8M', cpc:'$0.96', spendChg:'down|↑ $8,200', roasChg:'down|↓ 1.2x', imprChg:'up|↑ 92%', cpcChg:'down|↑ $0.14' },
+    youtube:   { subs:'12.4K', views:'2.4M', hours:'42.1K', dur:'5:58', subChg:'up|↑ 9,800', viewChg:'up|↑ 188%', hourChg:'up|↑ 162%', durChg:'down|↓ 0:12' },
+  },
+};
+
+function animateValue(el, newVal) {
+  el.style.transition = 'none';
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(6px)';
+  setTimeout(() => {
+    el.textContent = newVal;
+    el.style.transition = 'all .22s ease';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  }, 80);
+}
+
+function setKPI(id, value, chgStr) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const valEl = el.querySelector('.kpi-value');
+  const chgEl = el.querySelector('.kpi-change');
+  if (valEl) animateValue(valEl, value);
+  if (chgEl && chgStr) {
+    setTimeout(() => {
+      const [dir, label] = chgStr.split('|');
+      chgEl.className = 'kpi-change ' + dir;
+      chgEl.innerHTML = label + ' <span>vs last period</span>';
+    }, 80);
+  }
+}
+
+function updateKPIs(range) {
+  const d = rangeData[range];
+  if (!d) return;
+  const dash = d.dashboard;
+  setKPI('kpi-dash-reach', dash.reach, dash.reachChg);
+  setKPI('kpi-dash-eng',   dash.eng,   dash.engChg);
+  setKPI('kpi-dash-rev',   dash.rev,   dash.revChg);
+  setKPI('kpi-dash-roas',  dash.roas,  dash.roasChg);
+  const ig = d.instagram;
+  setKPI('kpi-ig-foll',  ig.followers, ig.follChg);
+  setKPI('kpi-ig-reach', ig.reach,     ig.reachChg);
+  setKPI('kpi-ig-eng',   ig.eng,       ig.engChg);
+  setKPI('kpi-ig-vis',   ig.visits,    ig.visChg);
+  const tt = d.tiktok;
+  setKPI('kpi-tt-foll',   tt.followers, tt.follChg);
+  setKPI('kpi-tt-views',  tt.views,     tt.viewChg);
+  setKPI('kpi-tt-watch',  tt.watch,     tt.watchChg);
+  setKPI('kpi-tt-shares', tt.shares,    tt.shareChg);
+  setKPI('kpi-tt-fyp',    tt.fyp,       tt.fypChg);
+  const sh = d.shopify;
+  setKPI('kpi-sh-rev',    sh.rev,    sh.revChg);
+  setKPI('kpi-sh-orders', sh.orders, sh.ordChg);
+  setKPI('kpi-sh-aov',    sh.aov,    sh.aovChg);
+  setKPI('kpi-sh-conv',   sh.conv,   sh.convChg);
+  const mt = d.meta;
+  setKPI('kpi-mt-spend', mt.spend, mt.spendChg);
+  setKPI('kpi-mt-roas',  mt.roas,  mt.roasChg);
+  setKPI('kpi-mt-impr',  mt.impr,  mt.imprChg);
+  setKPI('kpi-mt-cpc',   mt.cpc,   mt.cpcChg);
+  const yt = d.youtube;
+  setKPI('kpi-yt-subs',  yt.subs,  yt.subChg);
+  setKPI('kpi-yt-views', yt.views, yt.viewChg);
+  setKPI('kpi-yt-hours', yt.hours, yt.hourChg);
+  setKPI('kpi-yt-dur',   yt.dur,   yt.durChg);
+}
+
+function rng(el) {
+  el.closest('.date-range').querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  updateKPIs(el.textContent.trim());
+}
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function togglePlat(el) {
+  if (el.classList.contains('connected')) {
+    el.classList.remove('connected');
+    const b = el.querySelector('.conn-badge'); if (b) b.remove();
+  } else {
+    el.classList.add('connected');
+    const b = document.createElement('span'); b.className = 'conn-badge'; b.textContent = 'CONNECTED';
+    el.appendChild(b);
+  }
+}
+
+// ── ANALYTICS CONTEXT passed to Claude ──
+const ANALYTICS_CONTEXT = `
+You are the AI Advisor for Project Mainframe, a personal analytics dashboard for entrepreneurs and creators.
+You have access to the user's live analytics data across all connected platforms. Be direct, specific, and actionable.
+Keep responses concise (3–5 sentences max unless a detailed breakdown is requested). Reference actual numbers from the data below.
+
+CURRENT ANALYTICS DATA (last 30 days):
+
+OVERALL:
+- Total reach: 2.41M (+18.3%)
+- Avg engagement rate: 6.8% (+2.1%)
+- Total revenue: $14,200 (+9.7%)
+- Blended Meta ROAS: 3.6x (↓ from 4.0x)
+
+INSTAGRAM (@yourbrand):
+- Followers: 48,300 (+1,240 this period)
+- Reach: 918K (+22.4%)
+- Engagement rate: 7.2%
+- Top format: Carousels (9.3% eng rate), then Static (7.8%), Reels (6.1%), Stories (4.2%)
+- Best times: Tue 7–9PM (9.4%), Thu 6–8PM (8.7%), Sat 11AM (7.2%)
+- Top post: "Behind the scenes: new drop" — 84.2K reach, Carousel, Mar 18
+- Story views: flat (concern)
+- Link clicks: 842/mo (+18%)
+
+TIKTOK (@yourbrand):
+- Followers: 91,400 (+4,820 this period) — growing 3x faster than Instagram
+- Total views: 1.18M (+34.2%)
+- Avg watch time: 68% (+8%)
+- Shares: 8,421 (+41%)
+- FYP rate: 72%
+- Videos >60s completion rate: 82% (best performing)
+- Top video: "POV: you finally launch the thing" — 212K views, 82% completion
+- Top hashtags: Trending Sound A (+61% boost), #streetwear (+34%), #founder (+28%)
+
+SHOPIFY (yourbrand.myshopify.com):
+- Revenue: $14,200 (+9.7%)
+- Orders: 342 (+18 orders vs last period)
+- Avg order value: $41.50 (+$3.20)
+- Conversion rate: 3.2% (↓0.4% — concern)
+- Top traffic source: TikTok (34%), Instagram (28%), Meta Ads (22%)
+- #1 Product: Classic Hoodie Black — $4,970 revenue, 62% margin, 1.4% return rate, 68% reorder rate
+- #2 Product: Logo Tee White — $3,488 revenue, 71% margin, 0.9% return rate
+- #5 Product: Zip Pouch Navy — 5.7% return rate (concern)
+
+META ADS:
+- Total spend: $2,840
+- Blended ROAS: 3.6x (↓0.4x)
+- Impressions: 448K (+12.2%)
+- Avg CPC: $0.84 (↓$0.12, cheaper)
+- Ad Set A (Retargeting, $40/day): ROAS 4.8x, CPC $0.72, CTR 3.1% ✅ LIVE
+- Ad Set B (Cold audience, $30/day): ROAS 2.1x, CPC $1.24, CTR 1.2% ⚠️ PAUSED by AI
+- Brand Awareness Broad ($25/day): ROAS 3.9x, CPC $0.91, CTR 2.4% ✅ LIVE
+- Best audience: Retargeting (4.8x), Lookalike 1% (3.9x), worst: Broad Cold (2.1x)
+
+YOUTUBE (Your Brand Channel):
+- Subscribers: 12,400 (+830 this period)
+- Total views: 241K (+28.4%)
+- Watch hours: 3,820 (+19%)
+- Avg view duration: 6:42 (+0:48)
+- Top traffic: YouTube Search (41%), Suggested (28%), External TikTok (18%)
+- Top video: "How I built this in 30 days" — 41.2K views, 8:14 avg watch, 58% retention
+
+Always respond as a knowledgeable marketing advisor. Be specific with numbers. Give actionable next steps.
+`;
+
+const chatHistory = [];
+
+async function callClaude(userMessage) {
+  chatHistory.push({ role: 'user', content: userMessage });
+
+  const messages = chatHistory.map(m => ({ role: m.role, content: m.content }));
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: ANALYTICS_CONTEXT,
+      messages: messages
+    })
+  });
+
+  const data = await response.json();
+  const reply = data.content?.[0]?.text || 'Sorry, I had trouble reaching the AI. Please try again.';
+  chatHistory.push({ role: 'assistant', content: reply });
+  return reply;
+}
+
+async function chatSend() {
+  const input = document.getElementById('chat-in');
+  const win = document.getElementById('chat-win');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  const uMsg = document.createElement('div');
+  uMsg.className = 'chat-msg user';
+  uMsg.textContent = text;
+  win.appendChild(uMsg);
+
+  const tMsg = document.createElement('div');
+  tMsg.className = 'chat-msg ai';
+  tMsg.innerHTML = '<span class="typing">Analysing your data</span>';
+  win.appendChild(tMsg);
+  win.scrollTop = win.scrollHeight;
+
+  try {
+    const reply = await callClaude(text);
+    tMsg.textContent = reply;
+  } catch (e) {
+    tMsg.textContent = 'Connection error. Please try again.';
+  }
+  win.scrollTop = win.scrollHeight;
+}
+
+// Dashboard quick-ask widget also uses Claude
+async function qAI(inId, outId) {
+  const input = document.getElementById(inId);
+  const resp = document.getElementById(outId);
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  resp.classList.add('show');
+  resp.innerHTML = '<span class="typing">Analysing</span>';
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        system: ANALYTICS_CONTEXT + '\nKeep this response to 2–3 sentences max.',
+        messages: [{ role: 'user', content: text }]
+      })
+    });
+    const data = await response.json();
+    resp.textContent = data.content?.[0]?.text || 'Could not reach AI.';
+  } catch (e) {
+    resp.textContent = 'Connection error. Please try again.';
+  }
+}
+
+function aiPrompt(text) {
+  document.getElementById('chat-in').value = text;
+  chatSend();
+}
+</script>
+</body>
+</html>
